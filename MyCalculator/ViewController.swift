@@ -4,145 +4,127 @@
 //
 //  Created by Student on 2019-09-28.
 //  Copyright © 2019 Student. All rights reserved.
-//
+//Student ID: 301089444
+//Date:
+
+
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
-    var numberOnScreen: Double = 0;
-    var previousNumber: Double = 0;
-    var performingMath = false;
-    var operation = 0;
     
-
-    @IBAction func numbers(_ sender: UIButton) {
-
-        let value:String = sender.titleLabel?.text ?? ""
-        
-        if performingMath == true {
-            
-            LabelUI.text = value
-            numberOnScreen = Double(LabelUI.text!)!
-            performingMath = false
-            
-            
-        }
-        else {
-            
-            LabelUI.text = LabelUI.text! + value
-            
-            numberOnScreen = Double(LabelUI.text!)!
-            
-        }
-    }
-    @IBOutlet weak var LabelUI: UILabel!
+    var previousNumber : Double = 0
+    var numberOnScreen : Double = 0
+    var preTag = "+"
+    let tagList = ["+","-","*","/"]
+    var modOccured = false
+    var decimal : Bool = false
     
-    @IBAction func UIButton( sender: UIButton)
-    {
-       if LabelUI.text != "" && sender.tag != 11 && sender.tag != 18{
-        previousNumber = Double(LabelUI.text!)!
-        
-        if sender.tag == 14 { //Divide
-            
-            LabelUI.text = "÷";
-            
-        }
-        
-        if sender.tag == 15 { //Multiply
-            
-            LabelUI.text = "x";
-            
-        }
-        
-        if sender.tag == 16 { //Subtract
-            
-            LabelUI.text = "-";
-            
-        }
-        
-        if sender.tag == 17 { //Add
-            
-            LabelUI.text = "+";
-            
-        }
-        
-        
-        
-        operation = sender.tag
-        
-        performingMath = true;
-        
-    }
+    // 
     
-    else if sender.tag == 18 {
+    @IBOutlet weak var numberDisplayed: UILabel!
     
-    if operation == 14{ //Divide
-    
-    LabelUI.text = String(previousNumber / numberOnScreen)
-    
-    }
-    
-    else if operation == 15{ //Multiply
-    
-    LabelUI.text = String(previousNumber * numberOnScreen)
-    
-    }
-    
-    else if operation == 16{ //Subtract
-    
-    LabelUI.text = String(previousNumber - numberOnScreen)
-    
-    }
-    
-    else if operation == 17{ //Add
-    
-    LabelUI.text = String(previousNumber + numberOnScreen)
-    
-    }
-    
-    else if operation == 19{ //Decimal
-        if sender.tag == 19 { //Decimal
-            if (!(LabelUI.text?.contains("."))!)
-            {
-                LabelUI.text = LabelUI.text! + "."
-                numberOnScreen = Double(LabelUI.text!)!
-            }
-            
-        }
-        }
-     
-        
-    }
-    
-    else if sender.tag == 11{
-    
-    LabelUI.text = ""
-    
-    previousNumber = 0;
-    
-    numberOnScreen = 0;
-    
-    operation = 0;
-        
-    }
-
-    
-}
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         // Do any additional setup after loading the view, typically from a nib.
-        
     }
     
-    override func didReceiveMemoryWarning() {
-        
-        super.didReceiveMemoryWarning()
-        
-        // Dispose of any resources that can be recreated.
-        
+    
+    @IBAction func numberButtonsPressed(_ sender: UIButton) {
+        //print(sender.tag)
+        if (numberDisplayed.text! == "0" || numberDisplayed.text! == "+" || numberDisplayed.text! == "-" || numberDisplayed.text! == "*" || numberDisplayed.text! == "/" || modOccured ) && !(sender.tag == 0) && !(sender.tag==100){
+            numberDisplayed.text = String(sender.tag)
+        }
+        else if sender.tag == 100 && !decimal{
+            decimal = true
+            numberDisplayed.text = numberDisplayed.text! + "."
+        }
+        else if !(numberDisplayed.text! == "0") && !(sender.tag == 100){
+            numberDisplayed.text = numberDisplayed.text! + String(sender.tag)
+        }
     }
+    
+    
+    @IBAction func performOperation(_ sender: UIButton) {
+        
+        if previousNumber == 0 {
+            previousNumber = Double(numberDisplayed.text!) ?? 0
+            decimal = false
+        }
+        else{
+            // decimal = true
+            numberOnScreen = Double(numberDisplayed.text!) ?? 0
+            if preTag == "+"{
+                previousNumber += numberOnScreen
+            }
+            else if preTag == "-"{
+                previousNumber -= numberOnScreen
+            }
+            else if preTag == "*"{
+                previousNumber *= numberOnScreen
+            }
+            else if preTag == "/"{
+                previousNumber /= numberOnScreen
+            }
+        }
+        
+        if sender.tag == 4{
+            numberOnScreen = Double(numberDisplayed.text!) ?? 0
+            previousNumber = numberOnScreen/100
+            modOccured = true
+            decimal = true
+        }
+        
+        if sender.tag == 10 || sender.tag == 4{
+            decimal = true
+            numberDisplayed.text = String(previousNumber)
+            previousNumber = 0
+            preTag = "+"
+        }
+        else{
+            numberDisplayed.text = String(tagList[sender.tag])
+            preTag = tagList[sender.tag]
+        }
+    }
+    
+    
+    @IBAction func clearScreen(_ sender: UIButton) {
+        
+        numberDisplayed.text = "0"
+        previousNumber = 0
+        numberOnScreen = 0
+        preTag = "+"
+        modOccured = false
+        decimal = false
+    }
+    
+
+    @IBAction func back(_ sender: UIButton) {
+        
+        if numberDisplayed.text!.count > 1{
+            let index = numberDisplayed.text!.index(before: numberDisplayed.text!.endIndex)
+        
+            numberDisplayed.text = String(numberDisplayed.text![..<index])
+            
+            let dotCheck = numberDisplayed.text!.firstIndex(of: ".") ?? numberDisplayed.text!.endIndex
+            
+            if dotCheck == numberDisplayed.text!.endIndex{
+                decimal = false
+            }
+            
+            //print(String(displayNum.text![..<index]))
+        }
+        
+        else if numberDisplayed.text!.count == 1{
+            numberDisplayed.text = "0"
+            decimal = false
+        }
+    }
+    
+    
+    
     
 }
+
 
