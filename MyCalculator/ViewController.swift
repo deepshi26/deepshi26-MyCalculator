@@ -2,10 +2,11 @@
 //  ViewController.swift
 //  MyCalculator
 //
-//  Created by Student on 2019-09-28.
-//  Copyright © 2019 Student. All rights reserved.
+//Name : Deepshi
 //Student ID: 301089444
-//Date:
+//Description : Final Application with all mathematical function button working.
+// Date: 04/10/2019
+// Version : Version 1.0
 
 
 
